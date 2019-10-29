@@ -23,7 +23,7 @@ public class Numbergame extends JFrame {
         panel.setLayout(new GridLayout(Main.size,Main.size));
 
         for (int i = 0; i < buttons.length;i++) {
-            buttons[i] = new JButton();
+            buttons[i] = new JButton();;
             buttons[i].setText(String.valueOf(Main.numbers[i]));
             buttons[i].setPreferredSize(new Dimension(100,100));
             int finalI = i;
@@ -32,15 +32,25 @@ public class Numbergame extends JFrame {
                  if (verifyMove(buttons, buttons[finalI], Main.size)) {
 
                      for (JButton b : buttons) {
-                         if (b.getText().equalsIgnoreCase("0"))
+                         if (b.getText().equalsIgnoreCase("0")) {
                              b.setText(buttons[finalI].getText());
+                             b.setVisible(true);
+                         }
                      }
 
                      buttons[finalI].setText("0");
+                     buttons[finalI].setVisible(false);
                  }
 
             });
+
+
             panel.add(buttons[i]);
+        }
+
+        for (JButton b:buttons) {
+            if (b.getText().equalsIgnoreCase("0"))
+                b.setVisible(false);
         }
 
         pack();
@@ -50,7 +60,6 @@ public class Numbergame extends JFrame {
     public static boolean verifyMove (JButton[] btns, JButton b, int size) {
         int bLoc = 0;
 
-        // get b index in btns
         for (int i = 0; i < btns.length; i++) {
             if (btns[i].getText().equalsIgnoreCase(b.getText()))
                 bLoc = i;
