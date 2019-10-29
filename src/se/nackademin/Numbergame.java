@@ -66,12 +66,12 @@ public class Numbergame extends JFrame {
                 return true;
         }
 
-        if (bLoc-1 >= 0) {
+        if (bLoc-1 >= 0 && bLoc % size != 0) {
             if (btns[bLoc - 1].getText().equalsIgnoreCase("0"))
                 return true;
         }
 
-        if (bLoc+1 <= btns.length -1) {
+        if (bLoc+1 <= btns.length -1 && bLoc % size != size - 1) {
             if (btns[bLoc + 1].getText().equalsIgnoreCase("0"))
                 return true;
         }
