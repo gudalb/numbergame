@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.util.Arrays;
 import java.util.Random;
 
+// hmm
+
 
 public class Main {
     static int size = 2;
