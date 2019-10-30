@@ -2,19 +2,17 @@ package se.nackademin;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Arrays;
 import java.util.Random;
-import java.util.concurrent.Flow;
 
 public class Numbergame extends JFrame {
 
-    static JPanel panel = new JPanel();
+    static JPanel buttonsPanel = new JPanel();
     static JPanel mainPanel = new JPanel();
     static JPanel topPanel = new JPanel();
 
     static JButton[] buttons = new JButton[Main.size*Main.size];
     static JButton newGame = new JButton("New game");
-    //static JTextField sizeInput = new JTextField("4");
+    static JTextField sizeInput = new JTextField(String.valueOf(Main.size));
 
 
 
@@ -26,55 +24,37 @@ public class Numbergame extends JFrame {
 
         add(mainPanel);
         mainPanel.setLayout(new BorderLayout());
-        mainPanel.add(panel, BorderLayout.CENTER);
+        mainPanel.add(buttonsPanel, BorderLayout.CENTER);
         mainPanel.add(topPanel, BorderLayout.NORTH);
         topPanel.add(newGame);
         topPanel.setLayout(new FlowLayout());
-        //topPanel.add(sizeInput);
+        sizeInput.setPreferredSize(new Dimension(50,20));
+        topPanel.add(sizeInput);
 
         newGame.addActionListener(e -> {
-            randomizeGame(buttons);
+            if (setSizeFromInput(sizeInput)) {
+                buttonsPanel.removeAll();
+                buttons = new JButton[Main.size*Main.size];
+                newGame(buttons, buttonsPanel, Main.size);
+                randomizeGame(buttons);
+                fixButtonVisibility(buttons);
+                buttonsPanel.updateUI();
+                pack();
+            }
+            else {
+                randomizeGame(buttons);
+                fixButtonVisibility(buttons);
+            }
+
         });
 
 
-        panel.setLayout(new GridLayout(Main.size,Main.size));
+
+        newGame(buttons, buttonsPanel, Main.size);
+        randomizeGame(buttons);
+        fixButtonVisibility(buttons);
 
 
-        for (int i = 0; i < buttons.length;i++) {
-            buttons[i] = new JButton();;
-            buttons[i].setText(String.valueOf(Main.numbers[i]));
-            buttons[i].setPreferredSize(new Dimension(65,65));
-            int finalI = i;
-            buttons[i].addActionListener(e -> {
-
-                 if (verifyMove(buttons, buttons[finalI], Main.size)) {
-
-                     for (JButton b : buttons) {
-                         if (b.getText().equalsIgnoreCase("0")) {
-                             b.setText(buttons[finalI].getText());
-                             b.setVisible(true);
-                         }
-                     }
-
-                     buttons[finalI].setText("0");
-                     //todo töm siffror från knappar till numbers array??
-                     buttons[finalI].setVisible(false);
-
-                     if (winCheck(buttons))
-                         winPopup();
-
-                 }
-
-            });
-
-
-            panel.add(buttons[i]);
-        }
-
-        for (JButton b:buttons) {
-            if (b.getText().equalsIgnoreCase("0"))
-                b.setVisible(false);
-        }
 
         pack();
 
@@ -110,11 +90,30 @@ public class Numbergame extends JFrame {
         return false;
     }
 
-    public static void numbersSwitch () {
-        // todo fixa funktion som körs i verifymove som byter plats på intarna i listan
+    public static boolean setSizeFromInput(JTextField jtf) {
+        try {
+            int newSize = Integer.parseInt(jtf.getText());
+            if (newSize != Main.size) {
+                Main.size = newSize;
+                return true;
+            }
+        } catch (Exception e) {
+            System.out.println("text from field cant be parsed to int");
+        }
+
+        return false;
+
 
     }
 
+    public static void fixButtonVisibility (JButton[] btns) {
+        for (JButton b:btns) {
+            if (b.getText().equalsIgnoreCase("0"))
+                b.setVisible(false);
+            else
+                b.setVisible(true);
+        }
+    }
     public static void winPopup () {
         JOptionPane.showMessageDialog(null, "Congrats you won!");
     }
@@ -137,10 +136,44 @@ public class Numbergame extends JFrame {
         return false;
     }
 
+    public static void newGame (JButton[] btns, JPanel btnsPanel, int size) {
+        btnsPanel.setLayout(new GridLayout(size,size));
+
+        for (int i = 0; i < btns.length;i++) {
+            btns[i] = new JButton();
+            btns[i].setText(String.valueOf(i));
+            btns[i].setPreferredSize(new Dimension(65,65));
+            int finalI = i;
+            btns[i].addActionListener(e -> {
+
+                if (verifyMove(btns, btns[finalI], Main.size)) {
+
+                    for (JButton b : btns) {
+                        if (b.getText().equalsIgnoreCase("0")) {
+                            b.setText(btns[finalI].getText());
+                        }
+                    }
+
+                    btns[finalI].setText("0");
+
+                }
+
+                fixButtonVisibility(btns);
+
+                if (winCheck(btns))
+                    winPopup();
+
+            });
+
+
+            buttonsPanel.add(btns[i]);
+        }
+        fixButtonVisibility(btns);
+    }
+
     public static void randomizeGame (JButton[] btns) {
 
         Random r = new Random();
-
 
         for (int i = 0; i < btns.length;i++) {
 
@@ -150,16 +183,13 @@ public class Numbergame extends JFrame {
             btns[i].setText(btns[tempR].getText());
             btns[tempR].setText(temp);
 
-            for (JButton b:btns) {
-                if (b.getText().equalsIgnoreCase("0"))
-                    b.setVisible(false);
-                else
-                    b.setVisible(true);
             }
+
+        fixButtonVisibility(btns);
 
         }
 
-    }
+
 
     public static void main () {
 
