@@ -9,12 +9,14 @@ public class Numbergame extends JFrame {
     static JPanel buttonsPanel = new JPanel();
     static JPanel mainPanel = new JPanel();
     static JPanel topPanel = new JPanel();
+    static JPanel picPanel = new JPanel();
 
     static JButton[] buttons = new JButton[Main.size*Main.size];
     static JButton newGame = new JButton("New game");
     static JTextField sizeInput = new JTextField(String.valueOf(Main.size));
 
 
+    ImageIcon p = new ImageIcon("apa.png");
 
     Numbergame () {
         setSize(500,400);
@@ -26,6 +28,10 @@ public class Numbergame extends JFrame {
         mainPanel.setLayout(new BorderLayout());
         mainPanel.add(buttonsPanel, BorderLayout.CENTER);
         mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(picPanel, BorderLayout.SOUTH);
+
+
+        picPanel.setSize(300,100);
         topPanel.add(newGame);
         topPanel.setLayout(new FlowLayout());
         sizeInput.setPreferredSize(new Dimension(50,20));
